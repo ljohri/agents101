@@ -9,7 +9,7 @@ from dataclasses import dataclass
 @dataclass(frozen=True)
 class Settings:
     host: str = "127.0.0.1"
-    port: int = 8080
+    port: int = 8086
     allow_dev_no_auth: bool = True
     allow_public_bind: bool = False
     local_agent_token: str = "change-me"
@@ -27,7 +27,7 @@ class Settings:
 def load_settings() -> Settings:
     return Settings(
         host=os.getenv("HOST", "127.0.0.1"),
-        port=int(os.getenv("PORT", "8080")),
+        port=int(os.getenv("PORT", "8086")),
         allow_dev_no_auth=os.getenv("ALLOW_DEV_NO_AUTH", "true").lower() == "true",
         allow_public_bind=os.getenv("ALLOW_PUBLIC_BIND", "false").lower() == "true",
         local_agent_token=os.getenv("LOCAL_AGENT_TOKEN", "change-me"),

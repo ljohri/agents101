@@ -170,8 +170,8 @@ Each phase has acceptance commands and a mandatory test suite from the taxonomy 
   ```bash
   uv sync --extra dev
   uv run pytest tests/unit/test_agents_yaml.py tests/unit/test_workflows_yaml.py tests/unit/test_mcp_servers_yaml.py
-  uv run uvicorn agent_stack.main:app --host 127.0.0.1 --port 8080 &
-  curl -fsS http://127.0.0.1:8080/healthz
+  uv run uvicorn agent_stack.main:app --host 127.0.0.1 --port 8086 &
+  curl -fsS http://127.0.0.1:8086/healthz
   ```
 
 ### Phase 2 — Artifact generation
@@ -226,7 +226,7 @@ Each phase has acceptance commands and a mandatory test suite from the taxonomy 
   uv run python scripts/validate_workflows.py workflows.yaml
   uv run pytest tests/unit/test_workflow_compiler.py tests/unit/test_workflow_expressions.py
   uv run pytest tests/integration/test_workflow_end_to_end.py
-  curl -s -X POST http://127.0.0.1:8080/a2a/workflows \
+  curl -s -X POST http://127.0.0.1:8086/a2a/workflows \
     -H 'Content-Type: application/json' \
     -d '{"jsonrpc":"2.0","id":"1","method":"message/send","params":{"skill":"bibliography-research","inputs":{"pdf_path":"./data/paper.pdf"}}}' | jq
   ```

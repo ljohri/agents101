@@ -39,7 +39,7 @@ set -euo pipefail
 
 if ! command -v nemoclaw >/dev/null 2>&1; then
   echo "nemoclaw CLI not found. Install/configure NemoClaw, or run the server directly:"
-  echo "  uv run uvicorn agent_stack.main:app --host 127.0.0.1 --port 8080"
+  echo "  uv run uvicorn agent_stack.main:app --host 127.0.0.1 --port 8086"
   exit 1
 fi
 
@@ -98,7 +98,7 @@ flowchart TB
 Without NemoClaw (the common path):
 
 ```bash
-uv run uvicorn agent_stack.main:app --host 127.0.0.1 --port 8080
+uv run uvicorn agent_stack.main:app --host 127.0.0.1 --port 8086
 ```
 
 With NemoClaw (after local verification):

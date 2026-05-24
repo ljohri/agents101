@@ -20,7 +20,7 @@ bash scripts/bootstrap_local_config.sh   # copies *.example → private files
 cp .env.example .env                     # if needed
 uv sync --extra dev
 uv run python scripts/generate_agent_artifacts.py
-uv run uvicorn agent_stack.main:app --host 127.0.0.1 --port 8080
+uv run uvicorn agent_stack.main:app --host 127.0.0.1 --port 8086
 ```
 
 Edit `workflows.yaml` and `agents.yaml` freely — they never appear in git status.
@@ -35,8 +35,8 @@ Edit `workflows.yaml` and `agents.yaml` freely — they never appear in git stat
 
 ```bash
 uv run pytest -m "not chaos"
-curl -fsS http://127.0.0.1:8080/healthz
-curl -fsS -X POST http://127.0.0.1:8080/a2a/generic \
+curl -fsS http://127.0.0.1:8086/healthz
+curl -fsS -X POST http://127.0.0.1:8086/a2a/generic \
   -H 'Content-Type: application/json' \
   -d '{"jsonrpc":"2.0","id":"1","method":"message/send","params":{"skill":"echo","inputs":{"message":"hi"}}}'
 ```

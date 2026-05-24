@@ -38,8 +38,8 @@ class Owner(StrictModel):
 
 class RuntimeBlock(StrictModel):
     default_host: str = "127.0.0.1"
-    default_port: int = 8080
-    default_base_url: str = "http://127.0.0.1:8080"
+    default_port: int = 8086
+    default_base_url: str = "http://127.0.0.1:8086"
     default_a2a_prefix: str = "/a2a"
     generated_card_paths: list[str] = Field(
         default_factory=lambda: [".well-known/agent-card.json", ".well-known/agent.json"]

@@ -177,13 +177,13 @@ Boot:
 ```bash
 createdb agent_runtime
 USE_LANGGRAPH=true LANGGRAPH_CHECKPOINTER=postgres uv run python scripts/db_init.py
-uv run uvicorn agent_stack.main:app --host 127.0.0.1 --port 8080
+uv run uvicorn agent_stack.main:app --host 127.0.0.1 --port 8086
 ```
 
 Run a workflow:
 
 ```bash
-curl -s -X POST http://127.0.0.1:8080/a2a/workflows \
+curl -s -X POST http://127.0.0.1:8086/a2a/workflows \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer dev-token' \
   -d '{

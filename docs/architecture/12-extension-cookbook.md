@@ -51,7 +51,7 @@ These recipes intentionally reach across multiple architecture docs — when in 
 4. Restart (or `POST /admin/reload`), then call it:
 
    ```bash
-   curl -s -X POST http://127.0.0.1:8080/a2a/workflows \
+   curl -s -X POST http://127.0.0.1:8086/a2a/workflows \
      -H 'Content-Type: application/json' \
      -H 'Authorization: Bearer dev-token' \
      -d '{
@@ -93,13 +93,13 @@ References: [03-workflows](03-workflows.md), [05-a2a §3.6](05-a2a.md#36-workflo
 3. Reload:
 
    ```bash
-   curl -X POST http://127.0.0.1:8080/admin/reload
+   curl -X POST http://127.0.0.1:8086/admin/reload
    ```
 
 4. Verify the capability appeared:
 
    ```bash
-   curl -s http://127.0.0.1:8080/admin/capabilities \
+   curl -s http://127.0.0.1:8086/admin/capabilities \
      | jq '.[] | select(.uri | startswith("mcp.my-tool"))'
    ```
 
@@ -146,7 +146,7 @@ References: [04-mcp-integration](04-mcp-integration.md), [08-security-and-policy
          factory: build_graph
          state_schema: agent_stack.agents.my_agent.state.MyState
        server:
-         base_url: http://127.0.0.1:8080
+         base_url: http://127.0.0.1:8086
          a2a_endpoint: /a2a/my_agent
        auth:
          mode: local_bearer
@@ -163,13 +163,13 @@ References: [04-mcp-integration](04-mcp-integration.md), [08-security-and-policy
 
    ```bash
    uv run python scripts/generate_agent_artifacts.py
-   curl -X POST http://127.0.0.1:8080/admin/reload
+   curl -X POST http://127.0.0.1:8086/admin/reload
    ```
 
 4. Smoke test:
 
    ```bash
-   curl -s -X POST http://127.0.0.1:8080/a2a/my_agent \
+   curl -s -X POST http://127.0.0.1:8086/a2a/my_agent \
      -H 'Content-Type: application/json' \
      -H 'Authorization: Bearer dev-token' \
      -d '{"jsonrpc":"2.0","id":"1","method":"skills/list","params":{}}' | jq
@@ -205,7 +205,7 @@ References: [01-config-and-registries §3.1](01-config-and-registries.md#31-agen
 3. Reload and call it via `/a2a/workflows`:
 
    ```bash
-   curl -s -X POST http://127.0.0.1:8080/a2a/workflows \
+   curl -s -X POST http://127.0.0.1:8086/a2a/workflows \
      -H 'Authorization: Bearer dev-token' \
      -H 'Content-Type: application/json' \
      -d '{"jsonrpc":"2.0","id":"1","method":"message/send","params":{"skill":"my-skill","inputs":{...}}}' | jq
@@ -259,7 +259,7 @@ References: [05-a2a §3.4](05-a2a.md#34-card-generation-rules), [05-a2a §3.6](0
 4. Watch the breaker:
 
    ```bash
-   curl -s http://127.0.0.1:8080/admin/remotes | jq
+   curl -s http://127.0.0.1:8086/admin/remotes | jq
    ```
 
 References: [01-config-and-registries §3.1](01-config-and-registries.md#31-agentsyaml), [05-a2a §3.5](05-a2a.md#35-outbound-client-a2a_client).

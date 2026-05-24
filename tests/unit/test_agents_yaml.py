@@ -49,7 +49,7 @@ def test_rejects_endpoint_collision(tmp_path: Path) -> None:
         """
 schema_version: 1
 runtime:
-  default_base_url: http://127.0.0.1:8080
+  default_base_url: http://127.0.0.1:8086
 agents:
   a:
     id: a
@@ -57,7 +57,7 @@ agents:
     version: 0.1.0
     description: a
     runtime: { kind: local, module: x, factory: y }
-    server: { base_url: http://127.0.0.1:8080, a2a_endpoint: /a2a/shared }
+    server: { base_url: http://127.0.0.1:8086, a2a_endpoint: /a2a/shared }
     skills:
       - { id: s, name: s, description: s }
   b:
@@ -66,7 +66,7 @@ agents:
     version: 0.1.0
     description: b
     runtime: { kind: local, module: x, factory: y }
-    server: { base_url: http://127.0.0.1:8080, a2a_endpoint: /a2a/shared }
+    server: { base_url: http://127.0.0.1:8086, a2a_endpoint: /a2a/shared }
     skills:
       - { id: s, name: s, description: s }
 """.strip()
@@ -82,7 +82,7 @@ def test_rejects_id_mismatch(tmp_path: Path) -> None:
         """
 schema_version: 1
 runtime:
-  default_base_url: http://127.0.0.1:8080
+  default_base_url: http://127.0.0.1:8086
 agents:
   a:
     id: WRONG

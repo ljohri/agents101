@@ -21,8 +21,8 @@ These three files are the **only sources of truth** for static configuration. Ge
 schema_version: 1
 runtime:
   default_host: 127.0.0.1
-  default_port: 8080
-  default_base_url: http://127.0.0.1:8080
+  default_port: 8086
+  default_base_url: http://127.0.0.1:8086
   default_a2a_prefix: /a2a
   generated_card_paths:
     - .well-known/agent-card.json
@@ -45,7 +45,7 @@ agents:
       factory: build_graph
       state_schema: agent_stack.agents.generic_agent.state.GenericState
     server:
-      base_url: http://127.0.0.1:8080
+      base_url: http://127.0.0.1:8086
       a2a_endpoint: /a2a/generic
     auth:
       mode: local_bearer
@@ -84,7 +84,7 @@ agents:
       factory: build_graph
       state_schema: agent_stack.agents.bibliography_agent.state.BibliographyState
     server:
-      base_url: http://127.0.0.1:8080
+      base_url: http://127.0.0.1:8086
       a2a_endpoint: /a2a/bibliography
     auth:
       mode: local_bearer
@@ -165,7 +165,7 @@ Schema (Pydantic sketch — final lives in `src/agent_stack/registry/schemas.py`
 ```python
 class RuntimeBlock(BaseModel):
     default_host: str = "127.0.0.1"
-    default_port: int = 8080
+    default_port: int = 8086
     default_base_url: AnyHttpUrl
     default_a2a_prefix: str = "/a2a"
     generated_card_paths: list[str]
