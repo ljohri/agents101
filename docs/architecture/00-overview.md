@@ -173,7 +173,7 @@ sequenceDiagram
 
 A workflow that combines a local agent skill with an MCP tool and a built-in:
 
-```yaml file=workflows.yaml
+```yaml file=workflows.yaml.example
 schema_version: 1
 workflows:
   bibliography_research:

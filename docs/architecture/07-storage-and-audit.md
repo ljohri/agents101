@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS messages (
 );
 CREATE INDEX IF NOT EXISTS ix_messages_conv ON messages(conversation_id, created_at);
 
--- Tool calls (a thin convenience view; also logged via audit_events)
+-- Tool calls (thin convenience view, also in audit_events)
 CREATE TABLE IF NOT EXISTS tool_calls (
   id              TEXT PRIMARY KEY,
   conversation_id TEXT NOT NULL REFERENCES conversations(id),

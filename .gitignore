@@ -65,3 +65,13 @@ logs/
 
 # Cursor
 .cursor/scratch/
+
+# Private local config (samples committed as *.yaml.example)
+agents.yaml
+workflows.yaml
+mcp_servers.yaml
+AGENTS.md
+.well-known/
+
+# Per-agent private instruction overrides
+**/AGENTS.local.md

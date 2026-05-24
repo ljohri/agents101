@@ -29,6 +29,9 @@ DEFAULT_AGENTS_FILE = "agents.yaml"
 DEFAULT_WORKFLOWS_FILE = "workflows.yaml"
 DEFAULT_MCP_SERVERS_FILE = "mcp_servers.yaml"
 
+# Public samples shipped in-repo; private copies are gitignored (see .gitignore).
+EXAMPLE_SUFFIX = ".example"
+
 
 class ConfigError(Exception):
     """Raised on schema or cross-validation failures."""
@@ -40,6 +43,21 @@ class LoadedConfig:
     workflows: WorkflowsYaml
     mcp_servers: McpServersYaml
     root: Path
+
+
+def _resolve_config_path(root: Path, basename: str) -> Path:
+    """Prefer private ``basename``; fall back to committed ``basename.example``."""
+    primary = root / basename
+    if primary.exists():
+        return primary
+    example = root / f"{basename}{EXAMPLE_SUFFIX}"
+    if example.exists():
+        return example
+    raise ConfigError(
+        f"{basename} not found at {root}. "
+        f"Copy {basename}{EXAMPLE_SUFFIX} to {basename} "
+        f"(or run scripts/bootstrap_local_config.sh)."
+    )
 
 
 def _read_yaml(path: Path) -> dict[str, Any]:
@@ -152,9 +170,13 @@ def load_all(root: str | Path = ".") -> LoadedConfig:
     """Load and cross-validate all three registry files from `root`."""
     root_path = Path(root).resolve()
 
-    agents_raw = _read_yaml(root_path / DEFAULT_AGENTS_FILE)
-    workflows_raw = _read_yaml(root_path / DEFAULT_WORKFLOWS_FILE)
-    mcp_raw = _read_yaml(root_path / DEFAULT_MCP_SERVERS_FILE)
+    agents_path = _resolve_config_path(root_path, DEFAULT_AGENTS_FILE)
+    workflows_path = _resolve_config_path(root_path, DEFAULT_WORKFLOWS_FILE)
+    mcp_path = _resolve_config_path(root_path, DEFAULT_MCP_SERVERS_FILE)
+
+    agents_raw = _read_yaml(agents_path)
+    workflows_raw = _read_yaml(workflows_path)
+    mcp_raw = _read_yaml(mcp_path)
 
     # Friendlier message than the Pydantic discriminator error for schema_version.
     for name, raw in (

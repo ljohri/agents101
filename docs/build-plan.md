@@ -13,9 +13,9 @@ Implementation lives in-place at the repo root (no `local-agent-stack/` subdirec
 
 | File | Role | Audience | Loaded by |
 |------|------|----------|-----------|
-| [`agents.yaml`](../agents.yaml) | local + remote agents, skills, runtime kind | runtime + generator | `registry/config.py` |
-| [`mcp_servers.yaml`](../mcp_servers.yaml) | MCP server registry (lifecycle, transport, policy) | runtime | `runtime/mcp_bridge.py` |
-| [`workflows.yaml`](../workflows.yaml) | declarative workflows over capabilities | runtime + generator | `runtime/workflows/compiler.py` |
+| [`agents.yaml.example`](../agents.yaml.example) | local + remote agents (sample; copy to private `agents.yaml`) | runtime + generator | `registry/config.py` |
+| [`mcp_servers.yaml.example`](../mcp_servers.yaml.example) | MCP server registry sample | runtime | `runtime/mcp_bridge.py` |
+| [`workflows.yaml.example`](../workflows.yaml.example) | declarative workflow sample | runtime + generator | `runtime/workflows/compiler.py` |
 
 All three files carry a `schema_version` field; unknown versions are rejected by the loader and a migration table in [`docs/architecture/01-config-and-registries.md`](architecture/01-config-and-registries.md) tracks bumps.
 
@@ -262,7 +262,7 @@ Each phase has acceptance commands and a mandatory test suite from the taxonomy 
 
 A reference workflow that exercises the closed step set, expression sandbox, and both `agent.*` and `mcp.*` capability namespaces:
 
-```yaml file=workflows.yaml
+```yaml file=workflows.yaml.example
 schema_version: 1
 workflows:
   bibliography_research:
@@ -301,7 +301,7 @@ workflows:
       downloads: "{{ steps.download.downloads }}"
 ```
 
-The fenced block above is tagged `file=workflows.yaml`. The doc-drift test (`tests/test_docs_snippets.py`) asserts the block is an exact copy of the file on disk.
+The fenced block above is tagged `file=workflows.yaml.example.example`. The doc-drift test (`tests/test_docs_snippets.py`) asserts the block is an exact copy of the committed sample on disk. Your private `workflows.yaml` (gitignored) is not checked in.
 
 ## 8. Test taxonomy
 

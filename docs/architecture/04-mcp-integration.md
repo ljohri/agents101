@@ -15,7 +15,7 @@ Specify how the runtime manages **MCP (Model Context Protocol) servers**: their 
 
 ### 3.1 Configuration ([`mcp_servers.yaml`](../../mcp_servers.yaml))
 
-```yaml file=mcp_servers.yaml
+```yaml file=mcp_servers.yaml.example
 schema_version: 1
 servers:
   filesystem-safe:

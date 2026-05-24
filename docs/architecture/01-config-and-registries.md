@@ -17,7 +17,7 @@ These three files are the **only sources of truth** for static configuration. Ge
 
 ### 3.1 `agents.yaml`
 
-```yaml file=agents.yaml
+```yaml file=agents.yaml.example
 schema_version: 1
 runtime:
   default_host: 127.0.0.1
@@ -225,7 +225,7 @@ class AgentsYaml(BaseModel):
 
 The full grammar is documented in [03-workflows](03-workflows.md). The top-level shape:
 
-```yaml file=workflows.yaml
+```yaml file=workflows.yaml.example
 schema_version: 1
 workflows:
   bibliography_research:
@@ -268,7 +268,7 @@ workflows:
 
 The full grammar and bridge behavior is documented in [04-mcp-integration](04-mcp-integration.md):
 
-```yaml file=mcp_servers.yaml
+```yaml file=mcp_servers.yaml.example
 schema_version: 1
 servers:
   filesystem-safe:

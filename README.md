@@ -1,37 +1,42 @@
 # agents101 — Workflow-Driven Local Agent Stack
 
-A local, file-driven agent runtime where **MCP tools**, **A2A agent skills**, and **declarative workflows** are unified under a single capability model. The headline goal: any combination of MCP tools and agent skills can be composed into a new workflow via [`workflows.yaml`](workflows.yaml) — no Python required for the common case.
+A local agent runtime where **MCP tools**, **A2A agent skills**, and **declarative workflows** share one capability model.
+
+## Private config (not pushed to GitHub)
+
+Your real agent and workflow definitions stay local:
+
+| Private (gitignored) | Committed sample |
+|---------------------|------------------|
+| `agents.yaml` | `agents.yaml.example` |
+| `workflows.yaml` | `workflows.yaml.example` |
+| `mcp_servers.yaml` | `mcp_servers.yaml.example` |
+| `AGENTS.md`, `.well-known/*` | generated locally from your private YAML |
+
+First-time setup:
+
+```bash
+bash scripts/bootstrap_local_config.sh   # copies *.example → private files
+cp .env.example .env                     # if needed
+uv sync --extra dev
+uv run python scripts/generate_agent_artifacts.py
+uv run uvicorn agent_stack.main:app --host 127.0.0.1 --port 8080
+```
+
+Edit `workflows.yaml` and `agents.yaml` freely — they never appear in git status.
 
 ## Where to start
 
-- **Build plan (canonical):** [`docs/build-plan.md`](docs/build-plan.md)
-- **Architecture docs:** [`docs/architecture/`](docs/architecture/) (start with [`00-overview.md`](docs/architecture/00-overview.md))
-- **Legacy plan (superseded):** [`docs/legacy/openclaw_nemoclaw_a2a_cursor_implementation.md`](docs/legacy/openclaw_nemoclaw_a2a_cursor_implementation.md)
+- **Build plan:** [`docs/build-plan.md`](docs/build-plan.md)
+- **Architecture:** [`docs/architecture/00-overview.md`](docs/architecture/00-overview.md)
+- **Cookbook:** [`docs/architecture/12-extension-cookbook.md`](docs/architecture/12-extension-cookbook.md)
 
-## Core ideas
+## Quick test
 
-- **Capability URI** is the single addressing scheme:
-  - `mcp.<server>.<tool>` — an MCP tool exposed by a configured server
-  - `agent.<agent_id>.<skill_id>` — a local or remote A2A agent skill
-  - `workflow.<workflow_id>` — a compiled declarative workflow
-  - `builtin.<name>` — runtime built-ins (`branch`, `parallel`, `for_each`, `human_approval`, `assign`, `emit_artifact`)
-- **One invocation seam:** `capabilities.invoke(uri, inputs, ctx)` applies auth, policy, audit, and tracing uniformly.
-- **Workflows compile to LangGraph** at boot; sub-workflow calls work via the same checkpointer.
-- **Workflows become A2A skills** — they're externally callable and composable by other agents.
-
-## Layout (planned)
-
+```bash
+uv run pytest -m "not chaos"
+curl -fsS http://127.0.0.1:8080/healthz
+curl -fsS -X POST http://127.0.0.1:8080/a2a/generic \
+  -H 'Content-Type: application/json' \
+  -d '{"jsonrpc":"2.0","id":"1","method":"message/send","params":{"skill":"echo","inputs":{"message":"hi"}}}'
 ```
-agents101/
-  agents.yaml          # local + remote agents
-  workflows.yaml       # declarative workflows
-  mcp_servers.yaml     # MCP server registry
-  AGENTS.md            # generated
-  .well-known/         # generated agent cards
-  src/agent_stack/     # runtime, registry, agents, tools
-  scripts/             # generators, validators, db_init
-  docs/                # build plan + architecture docs
-  tests/               # unit / integration / contract / security / golden / chaos
-```
-
-See the [build plan](docs/build-plan.md) for the phased implementation.

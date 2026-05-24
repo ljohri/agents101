@@ -294,7 +294,7 @@ sequenceDiagram
 
 The canonical example (the same file referenced by [00-overview](00-overview.md#7-worked-example--composing-without-writing-python) and [01-config-and-registries](01-config-and-registries.md#32-workflowsyaml)):
 
-```yaml file=workflows.yaml
+```yaml file=workflows.yaml.example
 schema_version: 1
 workflows:
   bibliography_research:

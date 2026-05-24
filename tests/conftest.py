@@ -1,8 +1,8 @@
 """Shared test fixtures.
 
-REPO_ROOT points at the repo root so tests can load the real registry files
-(agents.yaml, workflows.yaml, mcp_servers.yaml) committed alongside the
-architecture docs (see docs/build-plan.md sec 9 DoD).
+REPO_ROOT points at the repo root so tests can load registry files via
+load_all() — private agents.yaml / workflows.yaml / mcp_servers.yaml when
+present, otherwise the committed *.yaml.example samples.
 """
 
 from __future__ import annotations
