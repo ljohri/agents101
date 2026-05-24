@@ -1,3 +1,7 @@
+> **SUPERSEDED.** This plan is kept for traceability. The canonical build plan is [`docs/build-plan.md`](../build-plan.md), with architectural detail in [`docs/architecture/`](../architecture/). Differences vs. this legacy plan are summarized in section 9 ("Detailed remediation of weaknesses") of the new build plan.
+
+---
+
 # Cursor Implementation Instructions: OpenClaw + NemoClaw + A2A + Agent Card + LangGraph Runtime
 
 Version: 0.2 tightened
