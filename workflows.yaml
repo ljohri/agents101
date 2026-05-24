@@ -1,0 +1,36 @@
+schema_version: 1
+workflows:
+  bibliography_research:
+    version: 0.1.0
+    name: Bibliography Research
+    description: Extract bibliography, resolve OA metadata, fetch PDFs.
+    exposed_as_skill:
+      id: bibliography-research
+      tags: [research, bibliography, workflow]
+    inputs:
+      pdf_path: { type: string, required: true }
+    steps:
+      - id: extract
+        call: agent.bibliography.extract-bibliography
+        with: { input: "{{ inputs.pdf_path }}" }
+        output: references
+      - id: resolve
+        call: agent.bibliography.resolve-open-access-pdfs
+        with: { references: "{{ steps.extract.references }}" }
+        output: oa_candidates
+      - id: approve
+        type: human_approval
+        when: "{{ len(steps.resolve.oa_candidates) > 5 }}"
+        message: "About to download {{ len(steps.resolve.oa_candidates) }} PDFs. Approve?"
+      - id: download
+        type: parallel
+        for_each: "{{ steps.resolve.oa_candidates }}"
+        as: candidate
+        call: mcp.filesystem-safe.download_url
+        with:
+          url: "{{ candidate.pdf_url }}"
+          dest: "./artifacts/{{ candidate.id }}.pdf"
+        output: downloads
+    output:
+      references: "{{ steps.extract.references }}"
+      downloads: "{{ steps.download.downloads }}"

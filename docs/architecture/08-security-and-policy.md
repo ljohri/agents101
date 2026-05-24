@@ -146,8 +146,8 @@ flowchart LR
 
 Forbid the filesystem tool from touching anything under `~/.aws`:
 
-```yaml file=agents.yaml
-# ... within agents.bibliography.policy.filesystem ...
+```yaml
+# fragment of agents.yaml — within agents.bibliography.policy.filesystem
 deny_patterns:
   - ~/.ssh
   - ~/.aws

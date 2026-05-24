@@ -1,0 +1,140 @@
+schema_version: 1
+runtime:
+  default_host: 127.0.0.1
+  default_port: 8080
+  default_base_url: http://127.0.0.1:8080
+  default_a2a_prefix: /a2a
+  generated_card_paths:
+    - .well-known/agent-card.json
+    - .well-known/agent.json
+
+agents:
+  generic:
+    id: generic
+    name: local-generic-agent
+    display_name: Local Generic Agent
+    version: 0.1.0
+    description: >
+      A minimal pass-through agent used as a fallback or for ad-hoc skills.
+    owner:
+      organization: local-dev
+      contact: local
+    runtime:
+      kind: local
+      module: agent_stack.agents.generic_agent.graph
+      factory: build_graph
+      state_schema: agent_stack.agents.generic_agent.state.GenericState
+    server:
+      base_url: http://127.0.0.1:8080
+      a2a_endpoint: /a2a/generic
+    auth:
+      mode: local_bearer
+      env_token_name: LOCAL_AGENT_TOKEN
+      allow_none_for_dev: true
+    capabilities:
+      streaming: false
+      push_notifications: false
+      state_transition_history: true
+      file_upload: false
+      artifacts: false
+    skills:
+      - id: echo
+        name: Echo
+        description: Echo the user message back.
+        tags: [debug]
+        input_modes: [text/plain]
+        output_modes: [text/plain]
+    behavior:
+      instruction_file: src/agent_stack/agents/generic_agent/AGENTS.md
+
+  bibliography:
+    id: bibliography
+    name: local-bibliography-agent
+    display_name: Local Bibliography Agent
+    version: 0.1.0
+    description: >
+      Extracts bibliographies, resolves scholarly metadata, and finds
+      legally available open-access PDFs.
+    owner:
+      organization: local-dev
+      contact: local
+    runtime:
+      kind: local
+      module: agent_stack.agents.bibliography_agent.graph
+      factory: build_graph
+      state_schema: agent_stack.agents.bibliography_agent.state.BibliographyState
+    server:
+      base_url: http://127.0.0.1:8080
+      a2a_endpoint: /a2a/bibliography
+    auth:
+      mode: local_bearer
+      env_token_name: LOCAL_AGENT_TOKEN
+      allow_none_for_dev: true
+    capabilities:
+      streaming: true
+      push_notifications: false
+      state_transition_history: true
+      file_upload: true
+      artifacts: true
+    skills:
+      - id: extract-bibliography
+        name: Extract Bibliography
+        description: Extract bibliography entries from PDF, BibTeX, RIS, or Markdown.
+        tags: [research, bibliography, bibtex, pdf]
+        input_modes: [text/plain, application/pdf, text/markdown]
+        output_modes: [application/json, text/markdown]
+      - id: resolve-open-access-pdfs
+        name: Resolve Open Access PDFs
+        description: Resolve legal open-access PDFs using arXiv, Unpaywall, OpenAlex, Crossref.
+        tags: [open-access, pdf, scholarly-metadata]
+        input_modes: [application/json, text/plain]
+        output_modes: [application/json]
+      - id: summarize-paper
+        name: Summarize Paper
+        description: Summarize a paper with citation, abstract, claims, method, limitations.
+        tags: [summary, paper, research]
+        input_modes: [application/pdf, text/plain]
+        output_modes: [text/markdown, application/json]
+    behavior:
+      instruction_file: src/agent_stack/agents/bibliography_agent/AGENTS.md
+      rules:
+        - Never download copyrighted PDFs from unauthorized mirrors.
+        - Prefer official publisher pages, arXiv, institutional repositories, and Unpaywall.
+        - Keep an audit log of external URLs accessed.
+        - Ask for confirmation before deleting files.
+    policy:
+      filesystem:
+        allowed_roots: [./data, ./artifacts]
+        deny_patterns: [~/.ssh, ~/.aws, ~/.config/gcloud]
+      network:
+        allow_domains:
+          - api.crossref.org
+          - api.openalex.org
+          - api.semanticscholar.org
+          - api.unpaywall.org
+          - arxiv.org
+          - export.arxiv.org
+
+  external_researcher:
+    id: external_researcher
+    name: external-researcher
+    version: 0.1.0
+    description: Example remote A2A agent reachable over the network.
+    runtime:
+      kind: remote
+      remote:
+        base_url: http://10.0.0.5:8080
+        a2a_endpoint: /a2a/researcher
+        auth:
+          mode: bearer
+          token_env: EXTERNAL_RESEARCHER_TOKEN
+        resilience:
+          connect_timeout_seconds: 3
+          read_timeout_seconds: 30
+          retry: { max_attempts: 3, backoff_seconds: 1.0, jitter: true }
+          circuit_breaker: { failure_threshold: 5, reset_seconds: 30 }
+    skills:
+      - id: literature-search
+        name: Literature Search
+        description: Search external scholarly indices.
+        tags: [research, external]

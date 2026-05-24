@@ -1,0 +1,29 @@
+schema_version: 1
+servers:
+  filesystem-safe:
+    id: filesystem-safe
+    transport: stdio
+    command: python
+    args: ["-m", "agent_stack.tools.filesystem_safe"]
+    cwd: .
+    env_passthrough: [PATH, HOME]
+    env:
+      FS_SAFE_ROOT: "./data"
+    autostart: true
+    health:
+      ready_timeout_seconds: 10
+      probe: tools/list
+    capabilities_filter:
+      allow_tools: ["read_file", "write_file", "download_url"]
+      deny_tools: []
+    policy:
+      max_concurrent_calls: 4
+      per_call_timeout_seconds: 30
+      retry: { max_attempts: 2, backoff_seconds: 1.5 }
+  fetch:
+    id: fetch
+    transport: http
+    url: http://127.0.0.1:9101/mcp
+    headers_env:
+      Authorization: FETCH_MCP_BEARER
+    autostart: false
