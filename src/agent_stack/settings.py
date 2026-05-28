@@ -20,6 +20,13 @@ class Settings:
     langgraph_postgres_dsn: str = ""
     metrics_enabled: bool = True
     metrics_path: str = "/metrics"
+    otel_enabled: bool = False
+    otel_exporter_otlp_endpoint: str = ""
+    otel_service_name: str = "agent_stack"
+    otel_traces_sampler: str = "always_on"
+    otel_traces_sampler_arg: str = ""
+    otel_exporter_otlp_protocol: str = "http/protobuf"
+    otel_traces_exporter: str = "otlp"
     openclaw_enabled: bool = False
     nemoclaw_enabled: bool = False
 
@@ -38,6 +45,13 @@ def load_settings() -> Settings:
         langgraph_postgres_dsn=os.getenv("LANGGRAPH_POSTGRES_DSN", ""),
         metrics_enabled=os.getenv("METRICS_ENABLED", "true").lower() == "true",
         metrics_path=os.getenv("METRICS_PATH", "/metrics"),
+        otel_enabled=bool(os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "").strip()),
+        otel_exporter_otlp_endpoint=os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", ""),
+        otel_service_name=os.getenv("OTEL_SERVICE_NAME", "agent_stack"),
+        otel_traces_sampler=os.getenv("OTEL_TRACES_SAMPLER", "always_on"),
+        otel_traces_sampler_arg=os.getenv("OTEL_TRACES_SAMPLER_ARG", ""),
+        otel_exporter_otlp_protocol=os.getenv("OTEL_EXPORTER_OTLP_PROTOCOL", "http/protobuf"),
+        otel_traces_exporter=os.getenv("OTEL_TRACES_EXPORTER", "otlp"),
         openclaw_enabled=os.getenv("OPENCLAW_ENABLED", "false").lower() == "true",
         nemoclaw_enabled=os.getenv("NEMOCLAW_ENABLED", "false").lower() == "true",
     )

@@ -17,6 +17,7 @@ Read in order, or jump to what you need.
 | 10 | [NemoClaw](10-nemoclaw.md) | sandbox model |
 | 11 | [observability](11-observability.md) | logs, OTEL spans, metrics, audit-event taxonomy |
 | 12 | [extension cookbook](12-extension-cookbook.md) | recipes for adding workflows, MCP servers, agents |
+| 13 | [traceability](13-traceability.md) | distributed tracing, Jaeger/Tempo operations, correlation |
 
 All docs follow the same outline (Purpose · Concepts · Contract · Diagrams · Failure modes · Extension points · Worked example · Cross-references), except the cookbook which is recipe-based.
 

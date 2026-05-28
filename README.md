@@ -40,3 +40,44 @@ curl -fsS -X POST http://127.0.0.1:8086/a2a/generic \
   -H 'Content-Type: application/json' \
   -d '{"jsonrpc":"2.0","id":"1","method":"message/send","params":{"skill":"echo","inputs":{"message":"hi"}}}'
 ```
+
+## Tracing (OTEL + Jaeger/Tempo)
+
+Start one local trace backend:
+
+```bash
+docker compose -f docker-compose.jaeger.yml up -d
+# or:
+docker compose -f docker-compose.observability.yml up -d
+```
+
+Run the app with OTEL enabled (defaults already present in `.env.example`):
+
+```bash
+cp .env.example .env
+uv sync --extra dev --extra otel
+uv run uvicorn agent_stack.main:app --host 127.0.0.1 --port 8086
+```
+
+Trigger a workflow call with a known trace id:
+
+```bash
+curl -s -X POST http://127.0.0.1:8086/a2a/workflows \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer dev-token' \
+  -d '{
+    "jsonrpc":"2.0",
+    "id":"1",
+    "method":"message/send",
+    "params":{
+      "skill":"bibliography-research",
+      "inputs":{"pdf_path":"./data/paper.pdf"},
+      "metadata":{"trace_id":"0123456789abcdef0123456789abcdef"}
+    }
+  }'
+```
+
+Explore traces:
+
+- Jaeger UI: `http://127.0.0.1:16686`
+- Grafana Explore (Tempo): `http://127.0.0.1:3000` (default login `admin/admin`)

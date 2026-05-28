@@ -14,3 +14,5 @@ def test_metrics_increment() -> None:
 def test_span_context() -> None:
     with Span("capability.invoked", uri="agent.generic.echo"):
         pass
+    body = render_metrics()
+    assert isinstance(body, str)

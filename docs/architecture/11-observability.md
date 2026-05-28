@@ -159,6 +159,8 @@ Rules:
 | OTEL | no-op unless `OTEL_EXPORTER_OTLP_ENDPOINT` set | standard OTEL envs |
 | Metrics | `/metrics` on `127.0.0.1` | `METRICS_ENABLED=true` (default), `METRICS_PATH=/metrics` |
 
+For backend topology and operator workflows (Jaeger/Grafana Tempo), see [13-traceability](13-traceability.md).
+
 ## 4. Diagrams
 
 ### 4.1 Where every event is produced

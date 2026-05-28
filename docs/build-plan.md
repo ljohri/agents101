@@ -245,8 +245,9 @@ Each phase has acceptance commands and a mandatory test suite from the taxonomy 
 ### Phase 8 — Observability
 
 - `runtime/observability.py`: structured JSON logs, OTEL spans around every capability invocation and workflow step, Prometheus metrics on `/metrics` (dev only, `127.0.0.1`).
+- `docs/architecture/13-traceability.md`: operator guide for trace propagation, Jaeger/Tempo topology, and cross-agent trace debugging.
 - Audit-event taxonomy applied uniformly.
-- **Acceptance:** `uv run pytest tests/unit/test_observability.py`; `curl /metrics | head`.
+- **Acceptance:** `uv run pytest tests/unit/test_observability.py`; `curl /metrics | head`; `uv run pytest tests/test_docs_snippets.py`.
 
 ### Phase 9 — OpenClaw bridge (disabled by default)
 

@@ -11,6 +11,7 @@ import httpx
 from agent_stack.registry.config import LoadedConfig
 from agent_stack.registry.schemas import AgentRuntimeRemote
 from agent_stack.runtime.capabilities import CapabilityError, CapabilityResult, InvocationContext
+from agent_stack.runtime.otel import inject_trace_headers
 
 
 @dataclass
@@ -57,7 +58,8 @@ class A2AClient:
             )
 
         token_env = rt.remote.auth.token_env
-        headers = {"traceparent": f"00-{ctx.trace_id}-01"}
+        headers: dict[str, str] = {}
+        inject_trace_headers(headers)
         if token_env:
             token = os.getenv(token_env, "")
             if token:

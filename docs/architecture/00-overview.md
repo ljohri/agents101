@@ -234,4 +234,5 @@ This file is the same one referenced by [`docs/build-plan.md`](../build-plan.md)
 - [07-storage-and-audit](07-storage-and-audit.md) — what lives in app tables vs. LangGraph tables.
 - [08-security-and-policy](08-security-and-policy.md) — auth, allow/deny, secrets.
 - [11-observability](11-observability.md) — log schema, OTEL, metrics, audit-event taxonomy.
+- [13-traceability](13-traceability.md) — end-to-end trace propagation and backend operations.
 - [12-extension-cookbook](12-extension-cookbook.md) — recipes for adding new things.

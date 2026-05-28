@@ -12,6 +12,7 @@ from typing import Any
 from pydantic import BaseModel, Field
 
 from agent_stack.registry.config import LoadedConfig, _parse_uri
+from agent_stack.runtime.otel import current_trace_ids, start_span
 
 
 class CapabilityCall(BaseModel):
@@ -89,7 +90,6 @@ class CapabilityRegistry:
     ) -> CapabilityResult:
         started = time.perf_counter()
         trace_id = ctx.trace_id or uuid.uuid4().hex
-        span_id = uuid.uuid4().hex[:16]
 
         if call.idempotency_key:
             key = hashlib.sha256(
@@ -97,50 +97,72 @@ class CapabilityRegistry:
             ).hexdigest()
             cached = self._idempotency.get(key)
             if cached is not None:
-                return cached.model_copy(update={"trace_id": trace_id, "span_id": span_id})
-
-        try:
-            scheme, parts = _parse_uri(call.uri)
-        except Exception as exc:
-            return self._fail(call.uri, "capability.invalid_uri", str(exc), trace_id, span_id, started)
-
-        if call.stream:
-            return self._fail(
-                call.uri,
-                "capability.streaming_unsupported",
-                "streaming not implemented in v0.1 direct mode",
-                trace_id,
-                span_id,
-                started,
-            )
-
-        try:
-            if scheme == "agent":
-                if agent_handler is None:
-                    raise RuntimeError("agent handler not configured")
-                output = await agent_handler(parts["agent_id"], parts["skill_id"], call.inputs, ctx)
-            elif scheme == "mcp":
-                if mcp_handler is None:
-                    raise RuntimeError("mcp handler not configured")
-                output = await mcp_handler(parts["mcp_server"], parts["mcp_tool"], call.inputs, ctx)
-            elif scheme == "workflow":
-                if workflow_handler is None:
-                    raise RuntimeError("workflow handler not configured")
-                output = await workflow_handler(parts["workflow_id"], call.inputs, ctx)
-            elif scheme == "builtin":
-                output = {"status": "ok", "builtin": parts["builtin_name"]}
-            else:
-                return self._fail(
-                    call.uri, "capability.not_found", f"unknown scheme {scheme!r}", trace_id, span_id, started
+                live_trace_id, live_span_id = current_trace_ids()
+                return cached.model_copy(
+                    update={"trace_id": live_trace_id or trace_id, "span_id": live_span_id}
                 )
-        except asyncio.CancelledError:
-            return self._fail(call.uri, "capability.cancelled", "cancelled", trace_id, span_id, started)
-        except TimeoutError:
-            return self._fail(call.uri, "capability.timeout", "timeout", trace_id, span_id, started, retryable=True)
-        except Exception as exc:
-            return self._fail(
-                call.uri, "capability.execution_error", str(exc), trace_id, span_id, started
-            )
+
+        scheme = "unknown"
+        with start_span(
+            "capability.invoked",
+            **{
+                "capability.uri": call.uri,
+                "workflow.id": ctx.workflow_id,
+                "workflow.version": ctx.workflow_version,
+                "workflow.step_id": ctx.step_id,
+            },
+        ) as span:
+            trace_id, span_id = current_trace_ids()
+            if not trace_id:
+                trace_id = ctx.trace_id or uuid.uuid4().hex
+            ctx.trace_id = trace_id
+            if not span_id:
+                span_id = uuid.uuid4().hex[:16]
+
+            try:
+                scheme, parts = _parse_uri(call.uri)
+                if span is not None:
+                    span.set_attribute("capability.scheme", scheme)
+            except Exception as exc:
+                return self._fail(call.uri, "capability.invalid_uri", str(exc), trace_id, span_id, started)
+
+            if call.stream:
+                return self._fail(
+                    call.uri,
+                    "capability.streaming_unsupported",
+                    "streaming not implemented in v0.1 direct mode",
+                    trace_id,
+                    span_id,
+                    started,
+                )
+
+            try:
+                if scheme == "agent":
+                    if agent_handler is None:
+                        raise RuntimeError("agent handler not configured")
+                    output = await agent_handler(parts["agent_id"], parts["skill_id"], call.inputs, ctx)
+                elif scheme == "mcp":
+                    if mcp_handler is None:
+                        raise RuntimeError("mcp handler not configured")
+                    output = await mcp_handler(parts["mcp_server"], parts["mcp_tool"], call.inputs, ctx)
+                elif scheme == "workflow":
+                    if workflow_handler is None:
+                        raise RuntimeError("workflow handler not configured")
+                    output = await workflow_handler(parts["workflow_id"], call.inputs, ctx)
+                elif scheme == "builtin":
+                    output = {"status": "ok", "builtin": parts["builtin_name"]}
+                else:
+                    return self._fail(
+                        call.uri, "capability.not_found", f"unknown scheme {scheme!r}", trace_id, span_id, started
+                    )
+            except asyncio.CancelledError:
+                return self._fail(call.uri, "capability.cancelled", "cancelled", trace_id, span_id, started)
+            except TimeoutError:
+                return self._fail(call.uri, "capability.timeout", "timeout", trace_id, span_id, started, retryable=True)
+            except Exception as exc:
+                return self._fail(
+                    call.uri, "capability.execution_error", str(exc), trace_id, span_id, started
+                )
 
         result = CapabilityResult(
             uri=call.uri,

@@ -269,3 +269,4 @@ workflow.completed
 - [05-a2a](05-a2a.md) — what gets written to `conversations` and `messages`.
 - [06-runtime-and-langgraph](06-runtime-and-langgraph.md) — checkpointer factory.
 - [11-observability](11-observability.md) — audit-event taxonomy and structured logs.
+- [13-traceability](13-traceability.md) — tracing backends and cross-agent correlation workflow.

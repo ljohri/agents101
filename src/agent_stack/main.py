@@ -15,6 +15,7 @@ from agent_stack.runtime.capabilities import CapabilityRegistry
 from agent_stack.runtime.graph_runner import GraphRunner
 from agent_stack.runtime.mcp_bridge import McpBridge
 from agent_stack.runtime.openclaw_bridge import OpenClawBridge
+from agent_stack.runtime.otel import setup_otel
 from agent_stack.runtime.storage import get_engine, init_db
 from agent_stack.settings import load_settings
 
@@ -24,6 +25,17 @@ logger = logging.getLogger("agent_stack.main")
 def create_app(root: str | None = None) -> FastAPI:
     settings = load_settings()
     app = FastAPI(title="agent-stack", version="0.1.0")
+    tracer = setup_otel(settings)
+    if tracer is not None:
+        try:
+            from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+            from opentelemetry.instrumentation.httpx import HTTPXClientInstrumentor
+
+            FastAPIInstrumentor.instrument_app(app, excluded_urls="/healthz,/metrics")
+            HTTPXClientInstrumentor().instrument()
+        except Exception as exc:  # pragma: no cover
+            logger.warning("otel auto-instrumentation skipped: %s", exc)
+    app.state.tracer = tracer
 
     config: LoadedConfig | None = None
     config_error: str | None = None
