@@ -27,6 +27,8 @@ Edit `workflows.yaml` and `agents.yaml` freely — they never appear in git stat
 
 ## Where to start
 
+- **How it fits together:** [`docs/how-it-fits-together.md`](docs/how-it-fits-together.md) — A2A, MCP, workflows, local agents, OpenClaw, NemoClaw
+- **All docs:** [`docs/README.md`](docs/README.md)
 - **Build plan:** [`docs/build-plan.md`](docs/build-plan.md)
 - **Architecture:** [`docs/architecture/00-overview.md`](docs/architecture/00-overview.md)
 - **Cookbook:** [`docs/architecture/12-extension-cookbook.md`](docs/architecture/12-extension-cookbook.md)

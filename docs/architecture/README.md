@@ -1,6 +1,8 @@
 # Architecture documentation
 
-Read in order, or jump to what you need.
+For a single-page mental model (A2A + MCP + workflows + OpenClaw + NemoClaw), start with [How It All Fits Together](../how-it-fits-together.md).
+
+Read the numbered series in order, or jump to what you need.
 
 | # | Doc | Topic |
 |---|-----|-------|

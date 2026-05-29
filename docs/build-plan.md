@@ -337,6 +337,7 @@ Before code lands in `src/`, the following must hold:
 
 ## 11. Where to read next
 
+- [`how-it-fits-together.md`](how-it-fits-together.md) — one-page mental model (A2A, MCP, workflows, OpenClaw, NemoClaw).
 - [`architecture/00-overview.md`](architecture/00-overview.md) — layer cake, request lifecycle.
 - [`architecture/02-capabilities.md`](architecture/02-capabilities.md) — the invocation envelope and error model.
 - [`architecture/03-workflows.md`](architecture/03-workflows.md) — workflow YAML grammar.

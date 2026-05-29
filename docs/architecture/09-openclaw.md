@@ -102,5 +102,5 @@ When this script exits 0, you may flip `OPENCLAW_ENABLED=true` and implement bri
 ## 8. Cross-references
 
 - [04-mcp-integration](04-mcp-integration.md) — the authoritative MCP bridge in this repo.
-- [10-nemoclaw](10-nemoclaw.md) — sandbox model that may host OpenClaw.
+- [10-nemoclaw](10-nemoclaw.md) — outer sandbox; when active, hosts this runtime (and OpenClaw when enabled).
 - [08-security-and-policy](08-security-and-policy.md) — `OPENCLAW_ENABLED` is governed by the same env-only secret rules.

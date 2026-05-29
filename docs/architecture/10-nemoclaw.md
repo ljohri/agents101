@@ -15,9 +15,10 @@ Specify the runtime's relationship to **NemoClaw** — a sandbox / OpenShell con
 ### 3.1 Intended execution model (when locally verified)
 
 ```
-NemoClaw / OpenShell starts sandbox
+NemoClaw / OpenShell starts sandbox (outermost layer)
   → runs the FastAPI server (uvicorn ...) inside the sandbox
-  → optionally launches MCP servers inside the same sandbox
+  → OpenClaw bridge/CLI (if OPENCLAW_ENABLED) also runs inside the same sandbox
+  → MCP servers spawned by mcp_bridge run inside the same sandbox
   → network egress restricted to allow_domains
   → filesystem writes restricted to data/ and artifacts/
 ```
@@ -65,11 +66,13 @@ flowchart TB
     nemo[NemoClaw sandbox]
     subgraph inside [Inside sandbox]
         api[FastAPI A2A server]
+        oclaw[OpenClaw bridge optional]
         bridge[mcp_bridge supervised stdio servers]
         mcpProc1[(filesystem-safe)]
         mcpProc2[(fetch over http if local)]
     end
     nemo --- inside
+    api -.optional.-> oclaw
     api --> bridge
     bridge --> mcpProc1
     bridge --> mcpProc2
@@ -110,6 +113,6 @@ bash scripts/run_in_nemoclaw.sh
 
 ## 8. Cross-references
 
-- [09-openclaw](09-openclaw.md) — sibling integration; both are optional.
+- [09-openclaw](09-openclaw.md) — operator shell that runs **inside** this sandbox when both are enabled.
 - [04-mcp-integration](04-mcp-integration.md) — stdio MCP servers run inside the sandbox when active.
 - [08-security-and-policy](08-security-and-policy.md) — `policy.filesystem` and `policy.network` blocks the runtime enforces independently.
