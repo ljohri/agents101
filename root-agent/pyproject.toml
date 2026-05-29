@@ -1,0 +1,44 @@
+[project]
+name = "root-agent"
+version = "0.1.0"
+description = "Root planner agent: an LLM judge/planner that fronts the agent_stack runtime over A2A, with Claude-style memory and guarded local command execution."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi>=0.115.0",
+  "uvicorn[standard]>=0.30.0",
+  "pydantic>=2.8.0",
+  "pyyaml>=6.0.2",
+  "httpx>=0.27.0",
+  "python-dotenv>=1.0.1",
+]
+
+[project.optional-dependencies]
+# LLM providers are optional and lazily imported, so the package installs and
+# imports cleanly even when a given SDK is absent.
+dev = ["pytest>=8.0.0", "pytest-asyncio>=0.23.0", "ruff>=0.6.0"]
+openai = ["openai>=1.40.0"]
+anthropic = ["anthropic>=0.34.0"]
+vertex = ["google-cloud-aiplatform>=1.60.0"]
+
+[project.scripts]
+root-agent = "root_agent.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["root_agent"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+addopts = "-ra -q"

@@ -1,0 +1,30 @@
+# Structural (non-secret) configuration for the root planner agent.
+# Secrets (API keys, tokens, credential paths) live in .env, not here.
+schema_version: 1
+
+# Downstream agent_stack runtime the root agent delegates to over A2A.
+runtime:
+  base_url: http://127.0.0.1:8086
+  # JSON-RPC endpoint for the synthetic "workflows" agent.
+  workflows_endpoint: /a2a/workflows
+  discovery_interval_seconds: 30
+  request_timeout_seconds: 30
+
+# Planner behavior.
+planner:
+  # When true, a synthesized plan may be saved back as a reusable workflow.
+  persist_synthesized_workflows: false
+
+# Memory tiers. Paths may also be overridden by env vars.
+memory:
+  global_path: ~/.root-agent/memory/GLOBAL.md
+  local_path: ./.root-agent/memory/LOCAL.md
+  max_chars: 4000
+  enable_session: true
+
+# Global command recipes (how to do a task with local CLI utilities).
+commands:
+  dirs:
+    - ~/.root-agent/commands
+    - ./.root-agent/commands
+  allow_local_commands: true

@@ -1,0 +1,18 @@
+# Root-agent-owned MCP servers (sample). Copy to mcp_servers.yaml to enable.
+# The format mirrors agent_stack's mcp_servers.yaml so the same McpBridge can
+# supervise these processes. Tools here surface as mcp.<server>.<tool>
+# capabilities the planner can use directly from the root agent.
+schema_version: 1
+servers:
+  filesystem-safe:
+    id: filesystem-safe
+    transport: stdio
+    command: python
+    args: ["-m", "agent_stack.tools.filesystem_safe"]
+    cwd: .
+    env_passthrough: [PATH, HOME]
+    env:
+      FS_SAFE_ROOT: "./artifacts"
+    autostart: true
+    capabilities_filter:
+      allow_tools: ["read_file", "write_file", "download_url"]
