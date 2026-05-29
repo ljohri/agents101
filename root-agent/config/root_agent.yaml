@@ -23,8 +23,10 @@ memory:
   enable_session: true
 
 # Global command recipes (how to do a task with local CLI utilities).
+# Dirs are loaded in order; later dirs override earlier ones by command name.
 commands:
   dirs:
-    - ~/.root-agent/commands
-    - ./.root-agent/commands
+    - ./config/commands       # repo-provided sample recipes
+    - ~/.root-agent/commands  # user-global recipes
+    - ./.root-agent/commands  # project-local recipes (highest precedence)
   allow_local_commands: true

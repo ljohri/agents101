@@ -1,0 +1,23 @@
+# Sample command recipe: search files with ripgrep.
+# Exposed to the planner as command.ripgrep-search when `rg` is on PATH.
+name: ripgrep-search
+description: Search the local filesystem for a pattern using ripgrep.
+when_to_use: Use to find files or lines matching a text/regex pattern under a path.
+requires: [rg]
+params:
+  - name: pattern
+    type: string
+    required: true
+    description: The text or regex to search for.
+  - name: path
+    type: string
+    default: "."
+    description: Directory or file to search.
+# argv array; each token is a single argument (no shell).
+argv_template: ["rg", "--line-number", "--no-heading", "{pattern}", "{path}"]
+timeout_seconds: 20
+output: lines
+safety:
+  # Reject attempts to walk outside the working tree.
+  deny_patterns: ["\\.\\./", "^/etc/", "^~"]
+  max_output_bytes: 200000
