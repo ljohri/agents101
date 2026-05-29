@@ -75,3 +75,8 @@ AGENTS.md
 
 # Per-agent private instruction overrides
 **/AGENTS.local.md
+
+# Root agent runtime memory + private config
+**/.root-agent/
+root-agent/mcp_servers.yaml
+root-agent/config/mcp_servers.yaml
